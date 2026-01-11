@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Job } from '../types';
+import SaveJobButton from './SaveJobButton';
 
 interface JobCardProps {
     job: Job;
@@ -20,12 +21,15 @@ export default function JobCard({ job }: JobCardProps) {
                     <h3 className="text-lg font-semibold text-slate-900 mb-1 leading-snug">{job.title}</h3>
                     <p className="text-sm font-medium text-slate-600">{job.company}</p>
                 </div>
-                <span className={`text-[0.65rem] font-semibold px-2 py-1 rounded-md whitespace-nowrap border ${isCompanySource
+                <div className="flex items-center gap-2">
+                    <SaveJobButton jobId={job.id} variant="icon" />
+                    <span className={`text-[0.65rem] font-semibold px-2 py-1 rounded-md whitespace-nowrap border ${isCompanySource
                         ? 'bg-blue-100 text-blue-800 border-blue-200'
                         : 'bg-slate-100 text-slate-600 border-slate-200'
-                    }`}>
-                    {job.source}
-                </span>
+                        }`}>
+                        {job.source}
+                    </span>
+                </div>
             </div>
 
             <div className="flex-1">

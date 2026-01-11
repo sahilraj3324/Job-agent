@@ -2,6 +2,7 @@ import { getJob, getJobs } from '../../../config/api';
 import { mapApiJobDetailToJob } from '../../../config/mappers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import SaveJobButtonWrapper from './SaveJobButtonWrapper';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -113,14 +114,17 @@ export default async function JobPage({ params }: PageProps) {
                             </div>
                         </div>
 
-                        <a
-                            href={job.applyUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block w-full bg-blue-600 text-white text-center font-bold text-lg py-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
-                        >
-                            Apply on Company Website
-                        </a>
+                        <div className="space-y-3">
+                            <SaveJobButtonWrapper jobId={job.id} />
+                            <a
+                                href={job.applyUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block w-full bg-blue-600 text-white text-center font-bold text-lg py-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                            >
+                                Apply on Company Website
+                            </a>
+                        </div>
                     </aside>
                 </div>
             </div>
