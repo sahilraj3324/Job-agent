@@ -1,5 +1,5 @@
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://job-agent-backend.vercel.app';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://job-agent-backend.vercel.app';
 
 // --- Types matching Backend Schema ---
 
@@ -277,3 +277,110 @@ export async function isJobSaved(userId: string, jobId: string): Promise<boolean
     const data = await response.json();
     return data.isSaved;
 }
+
+// --- Resume Analysis Types ---
+
+export interface ParsedResume {
+    skills: string[];
+    totalExperienceYears: number | null;
+    primaryRole: string;
+    summary: string;
+}
+
+export interface ResumeAnalysis {
+    score: number;
+    strengths: string[];
+    improvements: string[];
+    missingElements: string[];
+    atsTips: string[];
+    summary: string;
+}
+
+export interface MatchingJob {
+    job: JobFromAPI;
+    score: number;
+    percentage: number;
+    rank: number;
+}
+
+export interface AnalyzeAndMatchResponse {
+    candidateId: string;
+    parsedResume: ParsedResume;
+    analysis: ResumeAnalysis;
+    matchingJobs: MatchingJob[];
+}
+
+// --- Resume Analysis API Functions ---
+
+export async function analyzeResume(text: string): Promise<ResumeAnalysis> {
+    const response = await fetch(`${API_BASE_URL}/candidates/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to analyze resume: ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+export async function analyzeAndMatchResume(text: string, topK: number = 10): Promise<AnalyzeAndMatchResponse> {
+    const response = await fetch(`${API_BASE_URL}/candidates/analyze-and-match?topK=${topK}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to analyze and match resume: ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+export async function uploadResume(text: string): Promise<{ id: string; parsedResume: ParsedResume }> {
+    const response = await fetch(`${API_BASE_URL}/candidates`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to upload resume: ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+export async function getMatchingJobs(candidateId: string, topK: number = 10): Promise<MatchingJob[]> {
+    const response = await fetch(`${API_BASE_URL}/candidates/${candidateId}/match-jobs?topK=${topK}`, {
+        cache: 'no-store',
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to get matching jobs: ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+export async function uploadPdfResume(file: File, topK: number = 10): Promise<AnalyzeAndMatchResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE_URL}/candidates/upload-pdf?topK=${topK}`, {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || `Failed to upload PDF: ${response.statusText}`);
+    }
+
+    return response.json();
+}
+
+

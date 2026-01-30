@@ -39,6 +39,7 @@ export default function Header() {
                 </Link>
                 <nav className="hidden md:flex gap-8">
                     <Link href="/" className="text-[0.95rem] font-medium text-slate-600 hover:text-blue-500 transition-colors">Find Jobs</Link>
+                    <Link href="/resume" className="text-[0.95rem] font-medium text-slate-600 hover:text-blue-500 transition-colors">Resume</Link>
                     <Link href="/saved" className="text-[0.95rem] font-medium text-slate-600 hover:text-blue-500 transition-colors">Saved Jobs</Link>
                     <Link href="/discover" className="text-[0.95rem] font-medium text-slate-600 hover:text-blue-500 transition-colors">Discover</Link>
                 </nav>
@@ -68,6 +69,12 @@ export default function Header() {
                             '🧹 Clear Empty'
                         )}
                     </button>
+                    <Link
+                        href="/resume"
+                        className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow-md bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:-translate-y-px"
+                    >
+                        📄 Upload Resume
+                    </Link>
                     <Link
                         href="/discover"
                         className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow-md bg-emerald-500 hover:bg-emerald-600 text-white hover:-translate-y-px"
